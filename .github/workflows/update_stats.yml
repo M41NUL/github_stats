@@ -12,31 +12,21 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
       
-      - name: Generate Overview Stats
-        uses: anuraghazra/github-readme-stats@master
-        with:
-          username: M41NUL
-          
-      - name: Generate Language Stats
-        uses: anuraghazra/github-readme-stats@master
-        with:
-          username: M41NUL
-          
-      - name: Setup Git Config
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-      
-      - name: Create Stats Directory
+      - name: Create generated directory
         run: mkdir -p generated
       
-      - name: Download Stats
+      - name: Download Overview Stats
         run: |
-          curl -o generated/overview.svg "https://github-readme-stats.vercel.app/api?username=M41NUL&show_icons=true&theme=dark&count_private=true"
-          curl -o generated/languages.svg "https://github-readme-stats.vercel.app/api/top-langs/?username=M41NUL&layout=compact&theme=dark"
+          curl -o generated/overview.svg "https://github-readme-stats.vercel.app/api?username=M41NUL&show_icons=true&theme=dark&count_private=true&hide_border=true"
+      
+      - name: Download Language Stats
+        run: |
+          curl -o generated/languages.svg "https://github-readme-stats.vercel.app/api/top-langs/?username=M41NUL&layout=compact&theme=dark&hide_border=true"
       
       - name: Commit and Push
         run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
           git add generated/
           git commit -m "Update stats [skip ci]" || exit 0
           git push
