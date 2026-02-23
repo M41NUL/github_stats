@@ -1,8 +1,8 @@
-name: Update GitHub Stats
+name: Generate GitHub Stats
 
 on:
   schedule:
-    - cron: "0 0 * * *"   # Runs daily at 12 AM UTC
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,22 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Generate Overview Stats
-        run: |
-          mkdir -p generated
-          curl -o generated/overview.svg "https://github-readme-stats.vercel.app/api?username=M41NUL&show_icons=true&theme=tokyonight"
+      - name: Generate Stats
+        uses: anuraghazra/github-readme-stats@master
+        with:
+          username: M41NUL
+          show_icons: true
+          theme: tokyonight
+          output_dir: generated
 
-      - name: Generate Language Stats
+      - name: Commit files
         run: |
-          curl -o generated/languages.svg "https://github-readme-stats.vercel.app/api/top-langs/?username=M41NUL&layout=compact&theme=tokyonight"
-
-      - name: Commit & Push
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add generated/
-          git commit -m "Update GitHub stats"
+          git commit -m "Update stats" || echo "No changes"
           git push
