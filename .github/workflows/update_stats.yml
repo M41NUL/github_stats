@@ -26,14 +26,21 @@ jobs:
 
       - name: Install github-status generator
         run: |
-          go install github.com/TBXark/github-status@latest
+          
+          go install github.com/tbxark/github-status@latest
 
       - name: Generate SVGs into generated/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p generated
-          "$(go env GOPATH)/bin/github-status" --output generated
+          
+          if [ -f "$(go env GOPATH)/bin/github-status" ]; then
+            "$(go env GOPATH)/bin/github-status" --output generated
+          else
+            
+            ~/go/bin/github-status --output generated
+          fi
 
       - name: Commit & Push
         run: |
