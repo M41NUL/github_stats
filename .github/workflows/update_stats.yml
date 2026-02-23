@@ -1,4 +1,4 @@
-name: Generate GitHub Stats
+name: Update GitHub Stats
 
 on:
   schedule:
@@ -12,18 +12,25 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Generate Stats
-        uses: anuraghazra/github-readme-stats@master
-        with:
-          username: M41NUL
-          show_icons: true
-          theme: tokyonight
-          output_dir: generated
+      - name: Create generated folder
+        run: mkdir -p generated
 
-      - name: Commit files
+      - name: Download Overview SVG
+        run: |
+          curl -H "User-Agent: github-actions" \
+          -o generated/overview.svg \
+          "https://github-readme-stats.vercel.app/api?username=M41NUL&show_icons=true&theme=tokyonight"
+
+      - name: Download Languages SVG
+        run: |
+          curl -H "User-Agent: github-actions" \
+          -o generated/languages.svg \
+          "https://github-readme-stats.vercel.app/api/top-langs/?username=M41NUL&layout=compact&theme=tokyonight"
+
+      - name: Commit and Push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add generated/
-          git commit -m "Update stats" || echo "No changes"
+          git commit -m "Update GitHub Stats" || echo "No changes"
           git push
